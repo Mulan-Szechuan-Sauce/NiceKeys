@@ -1,0 +1,2 @@
+* NiceKeys
+Generate a public key starting with the specified key prefix (and the matching private key).
