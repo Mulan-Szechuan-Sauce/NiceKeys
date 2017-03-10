@@ -1,9 +1,9 @@
 FLAGS = -Wall -lssl -lcrypto
-DEPENDENCIES = keygen.h
+DEPENDENCIES = nicekeys.h
 
 all: nicekeys
 
-nicekeys: keygen.o
+nicekeys: nicekeys.o
 	gcc ${FLAGS} -o $@ $^
 
 %.o: %.c ${DEPENDENCIES}

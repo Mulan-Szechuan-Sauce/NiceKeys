@@ -4,7 +4,7 @@
 #include <openssl/sha.h>
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
-#include "keygen.h"
+#include "nicekeys.h"
 
 int main(int argc, char **argv) {
   if (argc < 2) {
@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   enum key_types type;
   char *prefix;
   int size;
-  while((c = getopt_long(argc, argv, "k:s:p:t:h:", long_options, NULL)) != EOF) {
+  while((c = getopt_long(argc, argv, "k:s:p:t:h", long_options, NULL)) != EOF) {
     switch(c) {
     case 'k':
       if (strcmp(optarg, "rsa") == 0)
@@ -34,11 +34,14 @@ int main(int argc, char **argv) {
       options |= 0b100;
       break;
     case 't':
-      printf("threads: %s\n", optarg);
+      if ((threads = atoi(optarg)) == 0) {
+	      fprintf(stderr, "Threads must be an integer greater then 0\n");
+	      exit(EXIT_FAILURE);
+      }
       break;
     case 'h':
-      printf("help: %s\n", optarg);
-      break;
+      printUsage(stdout);
+      exit(EXIT_SUCCESS);
     default:
       printUsage(stderr);
       exit(EXIT_FAILURE);
