@@ -15,10 +15,9 @@ const struct option long_options[] =
    {"help"    , no_argument      , NULL, 'h'}
   };
 
-struct key_settings = {
-  char* settings;
-  char* prefix;
-  int   bit_size;
-}
+struct key_settings {
+  char*  prefix;
+  size_t bit_size;
+};
 
 const enum key_types { k_RSA };
