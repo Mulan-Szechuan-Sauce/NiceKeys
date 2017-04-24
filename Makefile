@@ -1,4 +1,4 @@
-FLAGS = -Wall -lssl -lcrypto
+FLAGS = -Wall -lssl -lcrypto -O3 -g
 DEPENDENCIES = nicekeys.h
 
 all: nicekeys
