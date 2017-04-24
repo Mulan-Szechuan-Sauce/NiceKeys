@@ -1,10 +1,4 @@
 #pragma once
-#include <stdio.h>
-#include <getopt.h>
-
-void printUsage(FILE* f);
-
-int threads = 1;
 
 const struct option long_options[] =
   {
@@ -16,8 +10,17 @@ const struct option long_options[] =
   };
 
 struct key_settings {
-  char*  prefix;
+  char   *prefix;
   size_t bit_size;
+  int    threads;
 };
 
-const enum key_types { k_RSA };
+enum key_types { 
+    DEFAULT,
+    k_RSA,
+    k_SHA256
+};
+
+char *etos(enum key_types k);
+void printUsage(FILE* f);
+
