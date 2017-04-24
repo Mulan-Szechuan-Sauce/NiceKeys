@@ -9,20 +9,28 @@
 #include "nicekeys.h"
 
 void generate_RSA(struct key_settings *settings) {
-    RSA *myrsa;
+    RSA *rsa;
+    BIGNUM *num;
+    BIO *out;
     unsigned long e = RSA_3;
-    BIO *out = NULL;
-    myrsa = RSA_generate_key(settings->bit_size, e, NULL, NULL);
 
-    out = BIO_new(BIO_s_file());
+    num = BN_new();
+    if (! BN_set_word(num, e)) {
+        fprintf(stderr, "Error generating prime.");
+        exit(EXIT_FAILURE);
+    }
 
-    if(myrsa == NULL){
-        printf("error in generating keypair..");
-        exit(1);
+    rsa = RSA_new();
+    if (! RSA_generate_key_ex(rsa, settings->bit_size, num, NULL)) {
+        fprintf(stderr, "Error generating key pair.");
+        exit(EXIT_FAILURE);
     }
 
     out = BIO_new_fp(stdout, BIO_CLOSE);
-    RSA_print(out,myrsa,0);
+
+    PEM_write_bio_RSAPublicKey(out, rsa);
+    printf("\n");
+    PEM_write_bio_RSAPrivateKey(out, rsa, NULL, NULL, 0, NULL, NULL);
 }
 
 void generate_SHA256(struct key_settings *settings) {
@@ -111,7 +119,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void printUsage(FILE* outputStream) {
+void printUsage(FILE *outputStream) {
     fprintf(outputStream, "NiceKeys USAGE:\n");
     fprintf(outputStream, "\t-k --key: Type of key to generate \n");
     fprintf(outputStream, "\t-s --size: The bit size of the key\n");
