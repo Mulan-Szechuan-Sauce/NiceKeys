@@ -6,6 +6,7 @@
 #include <openssl/pem.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <openssl/bn.h>
 #include "nicekeys.h"
 
 void generate_RSA(struct key_settings *settings) {
@@ -31,6 +32,10 @@ void generate_RSA(struct key_settings *settings) {
     PEM_write_bio_RSAPublicKey(out, rsa);
     printf("\n");
     PEM_write_bio_RSAPrivateKey(out, rsa, NULL, NULL, 0, NULL, NULL);
+    printf("\n");
+
+    BN_print(out, rsa->n);
+
 }
 
 void generate_SHA256(struct key_settings *settings) {
@@ -48,6 +53,10 @@ void generate_SHA256(struct key_settings *settings) {
     for (n = 0; n < SHA256_DIGEST_LENGTH; n++)
         printf("%02x", results[n]);
     printf("\n");
+}
+
+int validate_prefix(struct key_settings *settings, char *key) {
+
 }
 
 int main(int argc, char **argv) {
