@@ -87,10 +87,9 @@ int main(int argc, char **argv) {
     while((c = getopt_long(argc, argv, "k:s:p:t:h", long_options, NULL)) != EOF) {
         switch(c) {
             case 'k':
-                if (strcmp(optarg, "rsa") == 0 || strcmp(optarg, "RSA") == 0) {
+                if (strcasecmp(optarg, "rsa") == 0) {
                     type = k_RSA;
-                }
-                else if (strcmp(optarg, "sha256") == 0 || strcmp(optarg, "SHA256") == 0) {
+                } else if (strcasecmp(optarg, "sha256") == 0) {
                     type = k_SHA256;
                 } else {
                     fprintf(stderr, "Unknown encryption type\n");
