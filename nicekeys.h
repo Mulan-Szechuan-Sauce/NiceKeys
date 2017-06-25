@@ -6,7 +6,8 @@ const struct option long_options[] =
    {"size"    , required_argument, NULL, 's'},
    {"prefix"  , required_argument, NULL, 'p'},
    {"threads" , required_argument, NULL, 't'},
-   {"help"    , no_argument      , NULL, 'h'}
+   {"help"    , no_argument      , NULL, 'h'},
+   { NULL     , 0                , NULL,  0 }
   };
 
 struct key_settings {
@@ -15,7 +16,7 @@ struct key_settings {
   int    threads;
 };
 
-enum key_types { 
+enum key_types {
     DEFAULT,
     k_RSA,
     k_SHA256
@@ -23,4 +24,3 @@ enum key_types {
 
 char *etos(enum key_types k);
 void printUsage(FILE* f);
-

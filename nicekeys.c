@@ -9,9 +9,22 @@
 #include <openssl/bn.h>
 #include "nicekeys.h"
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+void RSA_get0_key(const RSA *r, const BIGNUM **n,
+                  const BIGNUM **e, const BIGNUM **d) {
+    if (n)
+        *n = r->n;
+    if (e)
+        *e = r->e;
+    if (d)
+        *d = r->d;
+}
+#endif
+
 void generate_RSA(struct key_settings *settings) {
     RSA *rsa;
     BIGNUM *num;
+    const BIGNUM *n;
     BIO *out;
     unsigned long e = RSA_3;
 
@@ -34,8 +47,8 @@ void generate_RSA(struct key_settings *settings) {
     PEM_write_bio_RSAPrivateKey(out, rsa, NULL, NULL, 0, NULL, NULL);
     printf("\n");
 
-    BN_print(out, rsa->n);
-
+    RSA_get0_key(rsa, &n, NULL, NULL);
+    BN_print(out, n);
 }
 
 void generate_SHA256(struct key_settings *settings) {
@@ -74,16 +87,15 @@ int main(int argc, char **argv) {
     while((c = getopt_long(argc, argv, "k:s:p:t:h", long_options, NULL)) != EOF) {
         switch(c) {
             case 'k':
-                if (strcmp(optarg, "rsa") == 0 || strcmp(optarg, "RSA") == 0) {
+                if (strcasecmp(optarg, "rsa") == 0) {
                     type = k_RSA;
-                }
-                else if (strcmp(optarg, "sha256") == 0 || strcmp(optarg, "SHA256") == 0) {
+                } else if (strcasecmp(optarg, "sha256") == 0) {
                     type = k_SHA256;
                 } else {
                     fprintf(stderr, "Unknown encryption type\n");
                     exit(EXIT_FAILURE);
                 }
-                options |= 0b1;      
+                options |= 0b1;
                 break;
             case 's':
                 if ((size = atoi(optarg)) == 0) {
@@ -143,7 +155,7 @@ char *etos(enum key_types k) {
         case k_SHA256: return "SHA256";
         case DEFAULT:  return "DEFAULT";
     }
-    
+
     /* For an invalid enum */
     return NULL;
 }
